@@ -36,6 +36,7 @@ router.get("/cart",utils.requireRole(1), authController.getCart);
 router.post("/updateuser",authController.postUpdateUser);
 // router.post("/update-cart",authController.updateCart);
 //order
+router.get("/callback",utils.requireRole(1),authController.callback);
 router.get("/orders/add-order",utils.requireRole(1),authController.addOrder);
 router.get("/orders",utils.requireRole(1),authController.orders);
 router.put("/orders/:idOrder/status",authController.changeStatus);

@@ -19,6 +19,31 @@ const facebook_secret = "e0e1c5672975422d1567e95e0bd62b0a"
 const {OAuth2Client}=require("google-auth-library");
 const client=new OAuth2Client("75435593592-ibbekma2opi25sc4bnfnrr276ki2ne01.apps.googleusercontent.com")
 //code here
+module.exports.callback=async (req,res)=>{
+    let cart= await Cart.findOne({userID:req.user.id});
+    if(cart.totalPrice==0){
+        return res.status(201).json({
+            success:false,
+            msg:"Giỏ hàng đang rỗng"
+        })
+    }
+    let order= await Order.create({
+        customer:ObjectId(req.user.id),
+        cart:{
+            totalPrice:cart.totalPrice,
+            productList:cart.productList},
+        status:2,
+    });
+    
+    await Cart.findOneAndUpdate(
+        {userID:req.user.id},
+        {totalPrice:0,productList:[]}
+    );
+    if(order){
+        return res.status(201).json({success:true});
+    }
+    res.status(500).json({success:false});
+}
 module.exports.callbackFacebook= async (req,res)=>{
     let rules = {
         accessToken:"required",
