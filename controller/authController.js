@@ -145,10 +145,8 @@ module.exports.callbackGoogle=async(req,res)=>{
 }
 module.exports.postContact=async(req,res)=>{
     const Objectnew= await ContactModel.create({...req.body,createdAt:Date()});
-    console.log(Objectnew)
     if(Objectnew){
         res.status(201).json({success:true});
-
     }
 }
 module.exports.postForgetPass=async(req,res)=>{
@@ -218,7 +216,6 @@ module.exports.postRegister = async function (req, res){
     
     const {email}=req.body;
     const userByEmail=await User.findOne({email});
-    console.log(userByEmail)
     if(userByEmail){
         return res.status(201).json({
             success:false,
@@ -367,7 +364,6 @@ module.exports.updateCart=async(req,res)=>{
     }
 
     var totalPrice=parseInt(cart.totalPrice)+distance;
-    console.log(totalPrice);
     const update=await Cart.findOneAndUpdate(
         {userID:req.user.id},
         {
@@ -462,7 +458,6 @@ module.exports.addOrder=async (req,res)=>{
 };
 module.exports.orders=async (req,res)=>{
     const orders=await Order.find({customer:req.user.id});
-    console.log(orders);
     res.status(200).json({success:true,orders});
 };
 module.exports.changeStatus=async(req,res)=>{
@@ -490,7 +485,6 @@ module.exports.Comment=async (req,res)=>{
         },
         {new:true}
     ).populate("comments.author");
-    console.log(seller);
 
     if(seller){
         return res.status(201).json({success:true,comments:seller.comments});

@@ -11,7 +11,6 @@ const config = {
   };
 
 module.exports.getData= async(req,res)=>{
-        console.log(req.body)
           return res.json({
             "returncode": 1,
             "returnmessage": "[returnmessage]"
@@ -46,7 +45,6 @@ module.exports.createOrder=async(req,res)=>{
             order.amount + "|" + order.app_time + "|" + order.embed_data + "|" + order.item;
             order.mac = CryptoJS.HmacSHA256(data, config.key1).toString();
             let result={};
-            console.log("=============",order)
             try {
             let postConfig = {
                 method: 'post',
@@ -59,15 +57,11 @@ module.exports.createOrder=async(req,res)=>{
             
             axios(postConfig)
                 .then(function (response) {
-                    console.log("1",JSON.stringify(response.data));
-                    
                     res.json({order:order,data:response.data})
                 })
                 .catch(function (error) {
-                    console.log("2",error);
                 });
             } catch (error) {
-            console.log("3",error)
             res.json(error)
             }
 

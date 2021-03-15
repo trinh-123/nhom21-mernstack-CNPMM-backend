@@ -29,7 +29,82 @@ module.exports.searchProducts= async (req,res) => {
         });
     }
 };
-
+module.exports.getByPrice = async (req,res) =>{
+    const {page, perPage, priceId,categoryId} = req.query;
+    const options = {
+        page: parseInt(page, 10) || 1,
+        limit: parseInt(perPage, 10) || 10,
+    };
+    if (!categoryId && !priceId ) {
+        const shirts = await Product.paginate({}, options);
+        return res.json(shirts);
+    }
+    if(!categoryId && priceId ){
+        var shirts;
+        switch (priceId){
+            case "1" :
+                shirts =await Product.paginate({
+                    price : {$lt : 120}
+                }, options);
+                break;
+            case "2":
+                shirts =await Product.paginate({
+                    $and:[
+                        {price : {$gte : 120}},
+                        {price: {$lte:150}}
+                    ]
+                }, options);
+                break;
+            case "3":
+                shirts =await Product.paginate({
+                    price : {$gt : 150}
+                }, options);
+                break;
+        }
+        return res.json(shirts);
+    }else{
+        if(categoryId && !priceId){
+            const shirts = await Product.paginate(
+                {
+                    categoryID: ObjectId(categoryId) ,
+                },
+                options
+            );
+            return res.json(shirts);
+        } else{
+            var shirts;
+            switch (priceId){
+                case "1" :
+                    shirts =await Product.paginate({
+                        $and:[
+                           {price : {$lt : 120}},
+                           {categoryID: ObjectId(categoryId)},
+                        ]
+                        
+                    }, options);
+                    break;
+                case "2":
+                    shirts =await Product.paginate({
+                        $and:[
+                            {categoryID: ObjectId(categoryId)},
+                            {price : {$gte : 120}},
+                            {price: {$lte:150}}
+                        ]
+                    }, options);
+                    break;
+                case "3":
+                    shirts =await Product.paginate({
+                        $and:[
+                            {price : {$gt : 150}},
+                            {categoryID: ObjectId(categoryId)},
+                         ]
+                    }, options);
+                    break;
+                }
+            return res.json(shirts);
+        }
+    }
+}
 module.exports.getProducts = async (req, res) => {
     const { page, perPage, categoryId, sellerId } = req.query;
     const options = {
@@ -75,7 +150,6 @@ module.exports.getProductBySeller=async(req,res)=>{
 }
 module.exports.updateProduct = async (req, res) => {
     let objUpdate = req.body;
-    console.log(objUpdate);
     const result = await Product.findOneAndUpdate(
         {_id:objUpdate._id},
         objUpdate,
@@ -83,7 +157,6 @@ module.exports.updateProduct = async (req, res) => {
             new: true,
         }
     );
-    console.log(result);
     res.status(201).json({ success: true, data: { user: result } });
 };
 module.exports.deleteProduct= async(req,res)=>{

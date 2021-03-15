@@ -25,7 +25,6 @@ module.exports.getContacts=async(req,res)=>{
     res.json({success:true,contacts});
 }
 module.exports.deleteContacts=async(req,res)=>{
-    console.log(req.body.id);
     const result=await Contact.findOneAndDelete({_id:req.body.id});
     if (result) return res.json("Xóa thành công!")
     else return res.json("Xóa thất bại")
@@ -34,7 +33,6 @@ module.exports.changeStatus = async (req, res) => {
     let result = await Order.findByIdAndUpdate(req.params.idOrder, {
         status: req.body.status,
     });
-    console.log(result);
     const orders = await Order.find({}).populate("customer");
     res.json({ success: true, orders });
 };
