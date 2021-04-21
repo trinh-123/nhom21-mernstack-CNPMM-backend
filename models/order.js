@@ -3,8 +3,14 @@ const mongoosePaginate = require("mongoose-paginate");
 
 const orderSchema =new mongoose.Schema({
     customer:{type:mongoose.Types.ObjectId, ref:"User"},
-    cart:{totalPrice:Number,productList:Array,size:String},
+    seller:{type:mongoose.Types.ObjectId,ref:"User"},
+    totalPrice:Number,
+    productList:Array,
     status:Number,
+    city:String,
+    street:String,
+    district:String,
+    phone:Number,
 },
 {timestamps:true}
 )

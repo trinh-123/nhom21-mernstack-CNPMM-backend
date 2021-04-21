@@ -30,26 +30,28 @@ module.exports.searchProducts= async (req,res) => {
     }
 };
 module.exports.getByPrice = async (req,res) =>{
-    const {page, perPage, priceId,categoryId} = req.query;
+    const {page, perPage, priceId,categoryId,parentCategoryId} = req.query;
     const options = {
         page: parseInt(page, 10) || 1,
         limit: parseInt(perPage, 10) || 10,
     };
-    if (!categoryId && !priceId ) {
+    if (!categoryId && !priceId && !parentCategoryId ) {
         const shirts = await Product.paginate({}, options);
         return res.json(shirts);
     }
-    if(!categoryId && priceId ){
+    if(!categoryId && priceId && parentCategoryId ){
         var shirts;
         switch (priceId){
             case "1" :
                 shirts =await Product.paginate({
+                    parentcategoryID: ObjectId(parentCategoryId) ,
                     price : {$lt : 120}
                 }, options);
                 break;
             case "2":
                 shirts =await Product.paginate({
                     $and:[
+                        {parentcategoryID: ObjectId(parentCategoryId) },
                         {price : {$gte : 120}},
                         {price: {$lte:150}}
                     ]
@@ -57,26 +59,36 @@ module.exports.getByPrice = async (req,res) =>{
                 break;
             case "3":
                 shirts =await Product.paginate({
+                    parentcategoryID: ObjectId(parentCategoryId) ,
                     price : {$gt : 150}
                 }, options);
                 break;
         }
         return res.json(shirts);
     }else{
-        if(categoryId && !priceId){
+        if(categoryId && !priceId && parentCategoryId){
             const shirts = await Product.paginate(
                 {
+                    parentcategoryID: ObjectId(parentCategoryId) ,
                     categoryID: ObjectId(categoryId) ,
                 },
                 options
             );
             return res.json(shirts);
         } else{
-            var shirts;
+            if(!categoryId && !priceId && parentCategoryId){
+                const shirts =await Product.paginate({
+                    parentcategoryID:ObjectId(parentCategoryId)
+                },options);
+                return res.json(shirts);
+            }else{
+                var shirts;
             switch (priceId){
                 case "1" :
                     shirts =await Product.paginate({
+                        
                         $and:[
+                           { parentcategoryID: ObjectId(parentCategoryId)} ,
                            {price : {$lt : 120}},
                            {categoryID: ObjectId(categoryId)},
                         ]
@@ -86,6 +98,7 @@ module.exports.getByPrice = async (req,res) =>{
                 case "2":
                     shirts =await Product.paginate({
                         $and:[
+                            { parentcategoryID: ObjectId(parentCategoryId)} ,
                             {categoryID: ObjectId(categoryId)},
                             {price : {$gte : 120}},
                             {price: {$lte:150}}
@@ -95,11 +108,13 @@ module.exports.getByPrice = async (req,res) =>{
                 case "3":
                     shirts =await Product.paginate({
                         $and:[
+                            { parentcategoryID: ObjectId(parentCategoryId)} ,
                             {price : {$gt : 150}},
                             {categoryID: ObjectId(categoryId)},
                          ]
                     }, options);
                     break;
+            }
                 }
             return res.json(shirts);
         }
