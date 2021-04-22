@@ -19,5 +19,10 @@ router.post(
     cpUpload,
     sellerController.postUpload
 );
+router.get("/order-by-seller",utils.requireRole(2),sellerController.findOrderBySeller);
+router.put(
+    "/orders/:idOrder/status",
+    sellerController.changeStatus
+);
 module.exports= router;
 

@@ -1,11 +1,26 @@
 const userModel= require("../models/user");
 const productModel= require("../models/product");
+const Order=require("../models/order");
 const upload = require("../multer");
 const cloudinary = require("../cloudinary");
 const fs = require("fs");
 const product = require("../models/product");
 
+module.exports.changeStatus = async (req, res) => {
+    let result = await Order.findByIdAndUpdate(req.params.idOrder, {
+        status: req.body.status,
+    });
+    const orders = await Order.find({seller:req.user.id}).populate("customer");
+    res.json({ success: true, orders });
+};
 
+module.exports.findOrderBySeller=async (req,res)=>{
+    const orders= await Order.find({seller:req.user.id}).populate("customer");
+    res.status(201).json({
+        success:true,
+        orders
+    })
+}
 module.exports.postUpload= async (req,res)=>{
     const sellerId=await userModel.findById(req.user.id);
     const uploader=async (path)=> await cloudinary.uploads(path,"images");
