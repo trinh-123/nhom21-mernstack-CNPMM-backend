@@ -37,7 +37,7 @@ router.post("/updateuser",authController.postUpdateUser);
 // router.post("/update-cart",authController.updateCart);
 //order
 router.get("/callback",utils.requireRole(1),authController.callback);
-router.get("/orders/order-detail/:id_order",utils.requireRole(1),authController.OrderDetail);
+router.get("/orders/order-detail/:id_order",authController.OrderDetail);
 router.post("/orders/add-order",utils.requireRole(1),authController.addOrder);
 router.get("/orders",utils.requireRole(1),authController.orders);
 router.put("/orders/:idOrder/status",authController.changeStatus);
