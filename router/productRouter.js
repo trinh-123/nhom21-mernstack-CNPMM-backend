@@ -11,5 +11,6 @@ router.get("/:id_product",productController.getProduct);
 router.get("/getproduct/:seller",productController.getProductBySeller);
 router.post("/delete-product",productController.deleteProduct);
 router.post("/update-product",productController.updateProduct);
+router.get("/relate-product/:id_product",productController.getRelateProduct);
 
 module.exports = router;

@@ -184,3 +184,16 @@ module.exports.getNewProduct = async (req, res) => {
     const result=await Product.find().sort({"_id": -1}).limit(4);
     res.json(result)
 }
+
+//get related products
+module.exports.getRelateProduct =async(req,res)=>{
+    const {id_product:idProduct}=req.params;
+    const product=await Product.findById(idProduct).populate("seller");
+    console.log(product);
+    const result=await Product.find(product.categoryID).sort({"_id":-1}).limit(5);
+    console.log(result);
+    //const result=await Product.find({categoryID:categoryID});
+    res.status(200).json({
+        data:result
+    })
+}
