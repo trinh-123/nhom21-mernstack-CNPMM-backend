@@ -188,12 +188,17 @@ module.exports.getNewProduct = async (req, res) => {
 //get related products
 module.exports.getRelateProduct =async(req,res)=>{
     const {id_product:idProduct}=req.params;
-    const product=await Product.findById(idProduct).populate("seller");
-    console.log(product);
-    const result=await Product.find(product.categoryID).sort({"_id":-1}).limit(5);
-    console.log(result);
-    //const result=await Product.find({categoryID:categoryID});
+    const product=await Product.findById(idProduct);
+    // const result=await Product.find(product.parentcategoryID).sort({"_id":-1}).limit(1);
+    //console.log(result);
+    let results=await Product.find({categoryID:product.categoryID}).sort({"_id":-1}).limit(5);
+    if(results.length<5){
+        results=await Product.find({parentcategoryID:product.parentcategoryID}).sort({"_id":-1}).limit(5);
+    }
+    let finalResult= results.filter(result=>result.name!=product.name)
+    
+    console.log(finalResult)
     res.status(200).json({
-        data:result
+        data:finalResult
     })
 }
