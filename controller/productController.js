@@ -35,10 +35,6 @@ module.exports.getByPrice = async (req,res) =>{
         page: parseInt(page, 10) || 1,
         limit: parseInt(perPage, 10) || 10,
     };
-    if (!categoryId && !priceId && !parentCategoryId ) {
-        const shirts = await Product.paginate({}, options);
-        return res.json(shirts);
-    }
     if(!categoryId && priceId && parentCategoryId ){
         var shirts;
         switch (priceId){
@@ -115,8 +111,9 @@ module.exports.getByPrice = async (req,res) =>{
                     }, options);
                     break;
             }
-                }
             return res.json(shirts);
+                }
+            
         }
     }
 }
