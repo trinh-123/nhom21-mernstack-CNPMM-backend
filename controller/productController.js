@@ -197,13 +197,13 @@ module.exports.getRelateProduct =async(req,res)=>{
     const product=await Product.findById(idProduct);
     // const result=await Product.find(product.parentcategoryID).sort({"_id":-1}).limit(1);
     //console.log(result);
-    let results=await Product.find({categoryID:product.categoryID}).sort({"_id":-1}).limit(5);
-    if(results.length<5){
-        results=await Product.find({parentcategoryID:product.parentcategoryID}).sort({"_id":-1}).limit(5);
+    let results=await Product.find({categoryID:product.categoryID}).sort({"_id":-1}).limit(4);
+    if(results.length<4){
+        results=await Product.find({parentcategoryID:product.parentcategoryID}).sort({"_id":-1}).limit(4);
     }
     let finalResult= results.filter(result=>result.name!=product.name)
     
-    console.log(finalResult)
+    console.log(finalResult.length)
     res.status(200).json({
         data:finalResult
     })
