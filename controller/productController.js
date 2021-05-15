@@ -184,7 +184,14 @@ module.exports.getNewProduct = async (req, res) => {
     const result=await Product.find().sort({"_id": -1}).limit(4);
     res.json(result)
 }
-
+ module.exports.getNewproductBySeller=async(req,res)=>{
+     const {seller}=req.params;
+     if(seller===""||seller===null){
+         return res.status(201).json({msg:"review your input"})
+     }
+     const result=await Product.find({seller}).sort({"_id":-1}).limit(4)
+     res.status(200).json({success:true,msg:"Thành công",data:result})
+ }
 //get related products
 module.exports.getRelateProduct =async(req,res)=>{
     const {id_product:idProduct}=req.params;

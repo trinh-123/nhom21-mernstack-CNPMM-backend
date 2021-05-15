@@ -6,6 +6,7 @@ const productSchema=new mongoose.Schema({
     price: Number,
     status: Number, // 1: ?, 2: ?, 3: ?
     quantity: Number,
+    quantitysold:Number,
     categoryID: mongoose.Schema.Types.ObjectId,
     parentcategoryID: mongoose.Schema.Types.ObjectId,
     seller: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

@@ -8,6 +8,7 @@ router.get ("/getByPrice",productController.getByPrice);
 router.get("/all",productController.getAllProduct);
 router.get("/new",productController.getNewProduct);
 router.get("/:id_product",productController.getProduct);
+router.get("/newproductby-seller/:seller",productController.getNewproductBySeller)
 router.get("/getproduct/:seller",productController.getProductBySeller);
 router.post("/delete-product",productController.deleteProduct);
 router.post("/update-product",productController.updateProduct);

@@ -58,3 +58,11 @@ module.exports.postUpload= async (req,res)=>{
      
     res.status(201).json({success:true,products});
 };
+module.exports.productBestSeller=async(req,res)=>{
+    const {id_Seller}=req.params
+   const productBySeller= await productModel.find({seller:id_Seller,quantitysold:{$gt:0}}).sort({"quantitysold": -1}).limit(4);
+   res.json({data:productBySeller})
+
+// Loop through cart items
+
+}

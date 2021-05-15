@@ -413,6 +413,20 @@ module.exports.OrderDetail = async(req,res) => {
     const orderDetail = await Order.findById(idOrder);
     res.status(200).json({success:true,orderDetail});
 };
+// const getUpdateOrder = (element)=>{
+//     return new Promise((resolve,reject)=>{
+//         totalPrice = totalPrice + (element.amount * element.productID.price);
+//         seller = element.sellerId;
+//         await Product.findOneAndUpdate(
+//             {
+//                 _id:element.productID._id
+//             },
+//             {
+//                 quantitysold:quantity-element.productID.amount
+//             }
+//         )
+//     })
+// }
 module.exports.addOrder = async (req, res) => {
     let cart = await Cart.findOne({ userID: req.user.id });
     if (cart.totalPrice == 0) {
@@ -438,6 +452,15 @@ module.exports.addOrder = async (req, res) => {
         groupOrder[i].forEach((element) => {
             totalPrice = totalPrice + (element.amount * element.productID.price);
             seller = element.sellerId;
+            const product=Product.findOne(element.productID._id);
+            Product.findOneAndUpdate(
+                {
+                    _id:element.productID._id
+                },
+                {
+                    quantitysold:product.quantity-element.amount
+                }
+            )
         })
         let order = await Order.create({
             customer: ObjectId(req.user.id),
@@ -451,6 +474,7 @@ module.exports.addOrder = async (req, res) => {
             status: 0,
         });
     }
+//update cart null
     await Cart.findOneAndUpdate(
         { userID: req.user.id },
         { totalPrice: 0, productList: [] }

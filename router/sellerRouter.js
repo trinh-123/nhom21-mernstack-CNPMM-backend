@@ -12,6 +12,7 @@ var cpUpload=upload.fields([
         name:"previewImgs",maxCount:20
     },
 ]);
+router.get("/best-seller/:id_Seller",sellerController.productBestSeller)
 router.use(verifyUser);
 router.post(
     "/upload",
