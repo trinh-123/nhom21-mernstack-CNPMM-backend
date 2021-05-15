@@ -7,6 +7,4 @@ router.get("/category", categoriesController.getCategories);
 router.get("/parentcategory",categoriesController.getParentCategories);
 router.get("/:id_parent", categoriesController.getCategoriesByParentId);
 
-
-
 module.exports = router;
