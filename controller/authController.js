@@ -459,6 +459,9 @@ module.exports.addOrder = async (req, res) => {
                 },
                 {
                     quantitysold:product.quantity-element.amount
+                },
+                {
+                    new:true
                 }
             )
         })
