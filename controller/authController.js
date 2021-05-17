@@ -449,19 +449,26 @@ module.exports.addOrder = async (req, res) => {
     for (let i = 0; i < groupOrder.length; i++) {
         let totalPrice = 0;
         var seller = "";
-        groupOrder[i].forEach((element) => {
+        groupOrder[i].forEach(async (element) => {
             totalPrice = totalPrice + (element.amount * element.productID.price);
             seller = element.sellerId;
-            const product=Product.findOne(element.productID._id);
+            const product= await Product.findOne(element.productID._id);
             Product.findOneAndUpdate(
                 {
                     _id:element.productID._id
                 },
                 {
+<<<<<<< HEAD
                     quantitysold:product.quantity-element.amount
                 },
                 {
                     new:true
+=======
+                    quantitysold:product.quantitysold + element.amount
+                },
+                {
+                    new: true,
+>>>>>>> d961ec89d4484696ddee3ba44d9ba797d61e0080
                 }
             )
         })

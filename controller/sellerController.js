@@ -39,6 +39,7 @@ module.exports.postUpload= async (req,res)=>{
     }
     let productDoc={
         ...req.body,
+        quantitysold:0,
         images:urlsImage,
         previewImgs:urlsPreview,
         seller:sellerId,
