@@ -40,7 +40,6 @@ module.exports.getByPrice = async (req,res) =>{
         shirts =await Product.paginate({
             parentcategoryID:ObjectId("60507c6e89323c1f3c905655")
         },options);
-        console.log("shirthagsd",shirts.docs.length);
         
     }
     if(!categoryId && priceId && parentCategoryId ){
@@ -67,7 +66,6 @@ module.exports.getByPrice = async (req,res) =>{
                 }, options);
                 break;
         }
-        console.log("shirt1",shirts.docs.length);
         
     }
     if(categoryId && !priceId && parentCategoryId){
@@ -78,7 +76,6 @@ module.exports.getByPrice = async (req,res) =>{
             },
             options
         );
-        console.log("shirt2",shirts.docs.length);
         
     }
     if(categoryId && priceId && parentCategoryId){
@@ -115,13 +112,11 @@ module.exports.getByPrice = async (req,res) =>{
                 }, options);
                 break;
         }
-        console.log("shirt3",shirts.docs.length);
     }
     if(!categoryId && !priceId && parentCategoryId){
         shirts =await Product.paginate({
             parentcategoryID:ObjectId(parentCategoryId)
         },options);
-        console.log("shirt4",shirts.docs.length);
         
     }
     return res.json(shirts);
@@ -202,15 +197,13 @@ module.exports.getNewProduct = async (req, res) => {
 module.exports.getRelateProduct =async(req,res)=>{
     const {id_product:idProduct}=req.params;
     const product=await Product.findById(idProduct);
-    // const result=await Product.find(product.parentcategoryID).sort({"_id":-1}).limit(1);
-    //console.log(result);
+    
     let results=await Product.find({categoryID:product.categoryID}).sort({"_id":-1}).limit(4);
     if(results.length<4){
         results=await Product.find({parentcategoryID:product.parentcategoryID}).sort({"_id":-1}).limit(4);
     }
     let finalResult= results.filter(result=>result.name!=product.name)
     
-    console.log(finalResult.length)
     res.status(200).json({
         data:finalResult
     })
