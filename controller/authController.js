@@ -453,22 +453,15 @@ module.exports.addOrder = async (req, res) => {
             totalPrice = totalPrice + (element.amount * element.productID.price);
             seller = element.sellerId;
             const product= await Product.findOne(element.productID._id);
-            Product.findOneAndUpdate(
+            await Product.findOneAndUpdate(
                 {
                     _id:element.productID._id
                 },
                 {
-<<<<<<< HEAD
-                    quantitysold:product.quantity-element.amount
-                },
-                {
-                    new:true
-=======
                     quantitysold:product.quantitysold + element.amount
                 },
                 {
-                    new: true,
->>>>>>> d961ec89d4484696ddee3ba44d9ba797d61e0080
+                    new:true
                 }
             )
         })
