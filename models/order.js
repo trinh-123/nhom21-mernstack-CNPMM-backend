@@ -10,6 +10,7 @@ const orderSchema =new mongoose.Schema({
     city:String,
     street:String,
     district:String,
+    statusRating:Number,
     phone:Number,
 },
 {timestamps:true}

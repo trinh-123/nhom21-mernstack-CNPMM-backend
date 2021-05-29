@@ -475,6 +475,7 @@ module.exports.addOrder = async (req, res) => {
             phone:req.body.phone,
             district:req.body.district,
             status: 0,
+            statusRating:0,
         });
     }
 //update cart null
@@ -554,9 +555,16 @@ module.exports.Comment=async (req,res)=>{
     }
 }
 module.exports.commentProduct= async (req,res) => {
-    const {rating,content,productID} =req.body;
+    const {rating,content,productID,orderID} =req.body;
     let user =await User.findById(req.user.id);
     const createdAt= Date.now();
+    await Order.findOneAndUpdate(
+        {_id:ObjectId(orderID)},
+        {
+            statusRating:1
+        },
+        {new:true}
+    )
     const product = await Product.findOneAndUpdate(
         {_id:ObjectId(productID)},
         {
