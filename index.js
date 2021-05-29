@@ -19,6 +19,7 @@ const adminRouter=require("./router/adminRouter");
 const sellerRouter=require("./router/sellerRouter");
 const categoriesRouter=require("./router/categoriesRouter");
 const zalopayRouter = require("./router/zaloPayRouter");
+const momoRouter = require("./router/momoRouter");
 mongoose.connect(process.env.MONGODB_URI,{ useUnifiedTopology: true,useNewUrlParser:true },
     () => console.log('connect to db'));
 
@@ -36,6 +37,7 @@ app.use("/profile",profileRouter);
 app.use("/seller",sellerRouter);
 app.use("/admin",adminRouter);
 app.use("/zalopay",zalopayRouter);
+app.use("/momo",momoRouter)
 app.listen(port, () =>{
     console.log(`Listening to port: ${port}`)
 })

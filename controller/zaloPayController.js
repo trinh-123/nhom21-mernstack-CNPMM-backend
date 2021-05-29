@@ -4,17 +4,18 @@ const axios = require('axios').default; // npm install axios
 const qs = require('qs');
 const Cart=require("../models/cart")
 const config = {
-    appid: "554",
-    key1: "8NdU5pG5R2spGHGhyO99HN1OhD8IQJBn",
-    key2: "uUfsWgfLkRLzq6W2uNXTCxrfxs51auny",
+    appid: "8888",
+    key1: "Edk3lhaw7W79Rhj80pgvNV8xSF9ANLXn",
+    key2: "LdprWagvRv5l2iXauSYXEyS6LZMbFEp2",
     endpoint: "https://sb-openapi.zalopay.vn/v2/create"
   };
 
 module.exports.getData= async(req,res)=>{
-          return res.json({
-            "returncode": 1,
-            "returnmessage": "[returnmessage]"
-          })
+  console.log(req.body)
+  return res.json({
+    "returncode": 1,
+    "returnmessage": "[returnmessage]"
+  })
 }
 const embeddata = {
       merchantinfo: "embeddata123"
