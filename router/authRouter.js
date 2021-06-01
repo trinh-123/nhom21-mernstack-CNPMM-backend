@@ -30,6 +30,7 @@ router.post("/login",authController.postLogin);
 router.post("/contact",authController.postContact);
 router.use(verifyUser);
 router.post("/add-to-cart",utils.requireRole(1), authController.addToCart);
+router.post("/update-fee-delivery",utils.requireRole(1),authController.updateFeeDelivery);
 router.post("/update-cart",utils.requireRole(1),authController.updateCart);
 router.post("/remove-from-cart",utils.requireRole(1),authController.removeFromCart)
 router.get("/cart",utils.requireRole(1), authController.getCart);

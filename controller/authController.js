@@ -225,6 +225,7 @@ module.exports.postRegister = async function (req, res){
     var user = await User.create(req.body);
     const cart=new Cart({
         userID:user._id,
+        feeDelivery:11
     });
     await cart.save();
     // let access_token = jwt.sign({
@@ -308,6 +309,7 @@ module.exports.addToCart=async(req,res)=>{
     const product=await Product.findById(productID);
     const cart=await Cart.find({userID: userId});
     var totalPrice=0;
+    var feeDelivery=11;
     if(cart[0].productList.forEach((element) => {
         if(element.productID._id==productID){
             element.amount=parseInt(element.amount)+parseInt(amount);
@@ -343,10 +345,29 @@ module.exports.addToCart=async(req,res)=>{
         }
         );
     }
+    update =await Cart.findOneAndUpdate(
+        {userID:userId},
+        {
+            feeDelivery:feeDelivery,
+        },
+        {new:true}
+    )
     const result=await Cart.find({userID:userId});
     if(update)
     res.status(201).json({success:true,data:result});
 };
+module.exports.updateFeeDelivery=async(req,res)=>{
+    const {fee} =req.body;
+    await Cart.findOneAndUpdate(
+        {userID:req.user.id},
+        {
+            feeDelivery:fee
+        },
+        {new:true}
+    );
+    const result=await Cart.findOne({userID:req.user.id});
+    res.status(201).json({success:true,data:result});
+}
 module.exports.updateCart=async(req,res)=>{
     const{productID,amount,size}=req.body;
     const cart=await Cart.findOne({userID:req.user.id});
@@ -413,20 +434,7 @@ module.exports.OrderDetail = async(req,res) => {
     const orderDetail = await Order.findById(idOrder);
     res.status(200).json({success:true,orderDetail});
 };
-// const getUpdateOrder = (element)=>{
-//     return new Promise((resolve,reject)=>{
-//         totalPrice = totalPrice + (element.amount * element.productID.price);
-//         seller = element.sellerId;
-//         await Product.findOneAndUpdate(
-//             {
-//                 _id:element.productID._id
-//             },
-//             {
-//                 quantitysold:quantity-element.productID.amount
-//             }
-//         )
-//     })
-// }
+
 module.exports.addOrder = async (req, res) => {
     let cart = await Cart.findOne({ userID: req.user.id });
     if (cart.totalPrice == 0) {
