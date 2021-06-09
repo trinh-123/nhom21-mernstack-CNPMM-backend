@@ -20,6 +20,7 @@ function verifyUser(req, res, next) {
         return next();
     })
 }
+router.get("/users",authController.getAllUserForChat)
 router.get("/user", authController.getUserById);
 router.post("/forgot",authController.postForgetPass);
 router.post("/changepassword",authController.postChangePassword);

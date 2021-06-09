@@ -8,12 +8,12 @@ const config = {
     parnerCode: "MOMOHLYQ20200323",  
     secretKey: "mfSHVrCOyNEoLommh9WK3WdZIHG4OwLL",
     endpoint: "https://test-payment.momo.vn/gw_payment/transactionProcessor",
-    notifyUrl: "https://e5aff59489ed.ngrok.io/momo/getorder",
+    notifyUrl: "https://6371567350ab.ngrok.io/momo/getorder",
     accessKey: "QghXGjTEoLJ4Hx8P"
   };
 
 module.exports.getData= async(req,res)=>{
-  console.log(req.body)
+  console.log(req)
   let data = {
     "partnerCode": config.parnerCode,
     "requestId": uuidv4(),
@@ -28,6 +28,7 @@ module.exports.getData= async(req,res)=>{
   &requestId=${data.requestId}&responseTime=${data.responseTime}&resultCode=
   ${data.resultCode}`
   data.signature= crypto.createHmac("sha256",config.secretKey).update(strSignature).digest("hex");
+  console.log(data)
   return res.status(200).json(data)
 }
 

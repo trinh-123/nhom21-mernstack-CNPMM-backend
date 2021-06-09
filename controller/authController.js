@@ -19,6 +19,16 @@ const facebook_secret = "e0e1c5672975422d1567e95e0bd62b0a"
 const {OAuth2Client}=require("google-auth-library");
 const client=new OAuth2Client("75435593592-ibbekma2opi25sc4bnfnrr276ki2ne01.apps.googleusercontent.com")
 //code here
+
+//get all user for chat
+module.exports.getAllUserForChat = async (req, res) => {
+
+    const users = await User.find()
+
+    res.json(users)
+
+}
+
 module.exports.callback=async (req,res)=>{
     let cart= await Cart.findOne({userID:req.user.id});
     if(cart.totalPrice==0){
