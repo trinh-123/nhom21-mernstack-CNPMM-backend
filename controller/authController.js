@@ -23,7 +23,7 @@ const client=new OAuth2Client("75435593592-ibbekma2opi25sc4bnfnrr276ki2ne01.apps
 //get all user for chat
 module.exports.getAllUserForChat = async (req, res) => {
 
-    const users = await User.find()
+    const users = await Seller.find()
 
     res.json(users)
 

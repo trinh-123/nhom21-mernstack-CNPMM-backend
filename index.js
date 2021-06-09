@@ -8,9 +8,15 @@ const cors=require("cors");
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-const http = require("http").createServer(app);
+const http = require("http").Server(app);
 app.use(cors());
-const io = require("socket.io")(http);
+const io = require("socket.io")(http, {
+    cors: {
+      origin: "http://localhost:3000",
+      methods: ["GET", "POST","UPDATE"]
+    }
+  });
+//const io = require("socket.io")(http);
 require('dotenv').config()
 var Messenger = require("./models/messenger");
 const messengerAPI = require("./router/chatRouter");
@@ -44,6 +50,9 @@ app.use("/momo",momoRouter)
 
 io.on("connection", (socket) => {
     console.log(`Có người vừa kết nối, socketID: ${socket.id}`);
+    socket.on('disconnect', (data) => {
+        console.log(`Có người vừa out: ${socket.id}`)
+      });
     socket.emit('hello',{
         message: 'hello'
     })
@@ -84,7 +93,7 @@ io.on("connection", (socket) => {
     });
   
   });
-  app.listen(port, () =>{
+  http.listen(port, () =>{
     console.log(`Listening to port: ${port}`)
 })
 
