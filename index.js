@@ -75,6 +75,7 @@ io.on("connection", (socket) => {
           id_user2: newData.id_user2,
         });
         if (messenger===null){
+          //newData.category="send"
           const newMes=new Messenger({
           id_user1: newData.id_user1,
           id_user2: newData.id_user2,
