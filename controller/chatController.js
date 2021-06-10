@@ -31,10 +31,21 @@ module.exports.send = async (req, res) => {
 
     //Tìm đúng tới cuộc trò chuyện của user xong sau đó push vào
     const messenger = await Messenger.findOne({id_user1: id_user1, id_user2: id_user2})
+    if (messenger===null){
+        const newMes=new Messenger({
+            id_user1: data.id_user1,
+            id_user2: data.id_user2,
+            content:data,
+          });
+          await newMes.save()
+    }
+    else
+    {
+        messenger.content.push(data)
 
-    messenger.content.push(data)
-
-    messenger.save()
+        messenger.save()
+    }
+   
 
     res.send("Thành Công!")
 

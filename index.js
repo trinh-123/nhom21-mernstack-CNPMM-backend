@@ -68,17 +68,25 @@ io.on("connection", (socket) => {
         category: "receive",
       };
   
-      console.log(newData.message);
-  
+      //console.log(newData.message);
       const postData = async () => {
         const messenger = await Messenger.findOne({
           id_user1: newData.id_user1,
           id_user2: newData.id_user2,
         });
-  
+        if (messenger===null){
+          const newMes=new Messenger({
+          id_user1: newData.id_user1,
+          id_user2: newData.id_user2,
+          content:newData,
+        });
+        await newMes.save();
+        }else
+        {
         messenger.content.push(newData);
   
         messenger.save();
+        }
       };
   
       postData();
