@@ -76,8 +76,8 @@ io.on("connection", (socket) => {
         });
         if (messenger===null){
           const newMes=new Messenger({
-          id_user1: data.id_user1,
-          id_user2: data.id_user2,
+          id_user1: newData.id_user1,
+          id_user2: newData.id_user2,
           content:newData,
         });
         await newMes.save();

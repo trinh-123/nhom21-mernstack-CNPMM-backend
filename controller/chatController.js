@@ -28,13 +28,14 @@ module.exports.send = async (req, res) => {
         name: req.query.name,
         category: req.query.category,
     }
-
+    console.log("id1",id_user1);
+    console.log("id2",id_user2);
     //Tìm đúng tới cuộc trò chuyện của user xong sau đó push vào
     const messenger = await Messenger.findOne({id_user1: id_user1, id_user2: id_user2})
     if (messenger===null){
         const newMes=new Messenger({
-            id_user1: data.id_user1,
-            id_user2: data.id_user2,
+            id_user1: id_user1,
+            id_user2: id_user2,
             content:data,
           });
           await newMes.save()
