@@ -13,6 +13,38 @@ module.exports.index = async (req, res) => {
     res.json(messenger)
 
 }
+module.exports.autoSend=async (req,res)=>{
+    
+    const id_user1 = req.query.id_user1
+    const id_user2 = req.query.id_user2
+
+    const data = {
+        id: req.query.id,
+        message: "Hello!! cảm ơn bạn đã liên hệ chúng tôi",
+        name: req.query.name,
+        category: "send",
+    }
+    const data1 = {
+        id: req.query.id,
+        message: "Hello!! cảm ơn bạn đã liên hệ chúng tôi",
+        name: req.query.name,
+        category: "receive",
+    }
+    //Tìm đúng tới cuộc trò chuyện của user xong sau đó push vào
+        const newMes=new Messenger({
+            id_user1: id_user1,
+            id_user2: id_user2,
+            content:data,
+          });
+          await newMes.save()
+          const newMes1=new Messenger({
+            id_user1: id_user2,
+            id_user2: id_user1,
+            content:data1,
+          });
+          await newMes1.save()
+    res.send("Thành Công!")
+}
 
 module.exports.send = async (req, res) => {
 
@@ -20,17 +52,12 @@ module.exports.send = async (req, res) => {
 
     const id_user1 = req.query.id_user1
     const id_user2 = req.query.id_user2
-
-    console.log("====1",id_user1)
-    console.log("=====2",id_user2)
     const data = {
         id: req.query.id,
         message: req.query.message,
         name: req.query.name,
         category: req.query.category,
     }
-    console.log("id1",id_user1);
-    console.log("id2",id_user2);
     //Tìm đúng tới cuộc trò chuyện của user xong sau đó push vào
     const messenger = await Messenger.findOne({id_user1: id_user1, id_user2: id_user2})
     if (messenger===null){
