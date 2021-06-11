@@ -73,11 +73,13 @@ io.on("connection", (socket) => {
 
     //console.log(newData.message);
     const postData = async () => {
+      let isNew = false;
       const messenger = await Messenger.findOne({
         id_user1: newData.id_user1,
         id_user2: newData.id_user2,
       });
       if (messenger === null) {
+        isNew = true;
         const newMes = new Messenger({
           id_user1: newData.id_user1,
           id_user2: newData.id_user2,
@@ -87,15 +89,15 @@ io.on("connection", (socket) => {
       } else {
         messenger.content.push(newData);
 
-       await messenger.save();
+        await messenger.save();
       }
+      return isNew;
     };
 
-    postData().then(()=>{
+    postData().then((res) => {
+      console.log(res)
       socket.broadcast.emit("receive_message");
     });
-
-   
   });
 
   socket.on("keyboard_message_send", (data) => {
