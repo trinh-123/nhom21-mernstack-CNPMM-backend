@@ -22,6 +22,8 @@ module.exports.send = async (req, res) => {
     const id_user1 = req.query.id_user1
     const id_user2 = req.query.id_user2
 
+    console.log("====1",id_user1)
+    console.log("=====2",id_user2)
     const data = {
         id: req.query.id,
         message: req.query.message,
@@ -33,8 +35,8 @@ module.exports.send = async (req, res) => {
     const messenger = await Messenger.findOne({id_user1: id_user1, id_user2: id_user2})
     if (messenger===null){
         const newMes=new Messenger({
-            id_user1: data.id_user1,
-            id_user2: data.id_user2,
+            id_user1: id_user1,
+            id_user2: id_user2,
             content:data,
           });
           await newMes.save()
