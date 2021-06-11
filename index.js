@@ -67,7 +67,7 @@ io.on("connection", (socket) => {
         name: data.name,
         category: "receive",
       };
-  
+      
       //console.log(newData.message);
       const postData = async () => {
         const messenger = await Messenger.findOne({
