@@ -10,7 +10,6 @@ module.exports.index = async (req, res) => {
     const id_user2 = req.query.id_user2
 
     const messenger = await Messenger.findOne({id_user1: id_user1, id_user2: id_user2})
-
     res.json(messenger)
 
 }
