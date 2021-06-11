@@ -2,6 +2,7 @@ const User=require("../models/user");
 const Product=require("../models/product");
 const Cart=require("../models/cart")
 const Order=require("../models/order");
+const Mes=require("../models/messenger");
 const ObjectId=require("mongodb").ObjectId;
 const { findById } = require("../models/user");
 const Validator=require("validatorjs");
@@ -22,10 +23,15 @@ const client=new OAuth2Client("75435593592-ibbekma2opi25sc4bnfnrr276ki2ne01.apps
 
 //get all user for chat
 module.exports.getAllUserForChat = async (req, res) => {
-
-    const users = await User.find()
-
-    res.json(users)
+    let id = req.user.id
+    console.log(id)
+    const users = await Mes.find({id_user1:ObjectId(id)})
+    let arr =[]
+    for(const element of users){
+        let items=await User.findOne({_id:ObjectId(element.id_user2)})
+        arr.push(items)
+    }
+    res.json(arr)
 
 }
 

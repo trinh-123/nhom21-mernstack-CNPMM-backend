@@ -20,7 +20,7 @@ function verifyUser(req, res, next) {
         return next();
     })
 }
-router.get("/users-chat",authController.getAllUserForChat)
+
 router.get("/user", authController.getUserById);
 router.post("/forgot",authController.postForgetPass);
 router.post("/changepassword",authController.postChangePassword);
@@ -30,6 +30,7 @@ router.post("/login-facebook",authController.callbackFacebook);
 router.post("/login",authController.postLogin);
 router.post("/contact",authController.postContact);
 router.use(verifyUser);
+router.get("/users-chat",authController.getAllUserForChat)
 router.post("/add-to-cart",utils.requireRole(1), authController.addToCart);
 router.post("/update-fee-delivery",utils.requireRole(1),authController.updateFeeDelivery);
 router.post("/update-cart",utils.requireRole(1),authController.updateCart);
