@@ -22,13 +22,13 @@ module.exports.autoSend=async (req,res)=>{
         id: req.query.id,
         message: "Hello!! cảm ơn bạn đã liên hệ chúng tôi",
         name: req.query.name,
-        category: "send",
+        category: "receive",
     }
     const data1 = {
         id: req.query.id,
         message: "Hello!! cảm ơn bạn đã liên hệ chúng tôi",
         name: req.query.name,
-        category: "receive",
+        category: "send",
     }
     //Tìm đúng tới cuộc trò chuyện của user xong sau đó push vào
         const newMes=new Messenger({
