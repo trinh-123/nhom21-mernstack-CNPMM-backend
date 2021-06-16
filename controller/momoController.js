@@ -1,5 +1,6 @@
 const crypto = require('crypto'); // npm install crypto-js
 const moment = require('moment'); // npm install moment
+const Order=require("../models/order");
 const axios = require('axios').default; // npm install axios
 const qs = require('qs');
 const Cart=require("../models/cart")
@@ -8,12 +9,35 @@ const config = {
     parnerCode: "MOMOHLYQ20200323",  
     secretKey: "mfSHVrCOyNEoLommh9WK3WdZIHG4OwLL",
     endpoint: "https://test-payment.momo.vn/gw_payment/transactionProcessor",
-    notifyUrl: "https://6371567350ab.ngrok.io/momo/getorder",
+    notifyUrl: "https://0cd56ecf8598.ngrok.io/momo/getorder",
     accessKey: "QghXGjTEoLJ4Hx8P"
   };
 
 module.exports.getData= async(req,res)=>{
-  console.log(req)
+  console.log(req.body)
+  if(req.body.errorCode!=0)
+  arrOrderid=req.body.orderId.split(",")
+  arrOrderid.forEach(async (element) =>{
+    console.log("====",element)
+    await Order.findOneAndUpdate(
+      {
+          _id:element
+      },
+      {
+          status:3
+      },
+    )
+  })
+  
+  
+  {
+    console.log("ko thanh coong")
+    arrOrderid=req.body.orderId.split(",")
+    console.log(arrOrderid)
+    return res.status(200).json({success:false, msg:"Not success"})
+  }
+  arrOrderid=req.body.orderId.split(",")
+  console.log("====",arrOrderid)
   let data = {
     "partnerCode": config.parnerCode,
     "requestId": uuidv4(),
@@ -29,7 +53,7 @@ module.exports.getData= async(req,res)=>{
   ${data.resultCode}`
   data.signature= crypto.createHmac("sha256",config.secretKey).update(strSignature).digest("hex");
   console.log(data)
-  return res.status(200).json(data)
+  return res.status(200).json({success:true,data:data})
 }
 
 const embeddata = {
@@ -42,20 +66,20 @@ const items = [{
     itemquantity: 1
   }];
 module.exports.createOrder=async(req,res)=>{
-    let cart= await Cart.findOne({userID:req.body.userId});
-    const _amount= cart.totalPrice;
-    const transID = Math.floor(Math.random() * 1000000);
+    // let cart= await Cart.findOne({userID:req.body.userId});
+    const _amount= req.body.totalPrice;
+    const orderID=req.body.listOrderId
     const embed_data = `userId=${req.body.userId}`;
     let order={
                 partnerCode: config.parnerCode,
                 requestId: uuidv4(),
                 accessKey:config.accessKey,
-                orderId: `${transID}`, // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
-                returnUrl: "https://google.com", // miliseconds
+                orderId: orderID, // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
+                returnUrl: "http://localhost:3000/", // miliseconds
                 extraData: embed_data,
                 notifyUrl: config.notifyUrl,
                 amount: (_amount*1000).toString(),
-                orderInfo: `Lazada - Payment for the order #${transID}`,
+                orderInfo: `TN - Payment for the orders #${req.body.listOrderID}`,
                 requestType: "captureMoMoWallet",
                 lang: "en",
 

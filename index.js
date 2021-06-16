@@ -91,7 +91,7 @@ io.on("connection", (socket) => {
 
         await messenger.save();
       }
-      return isNew;
+      return messenger.content.length;
     };
 
     postData().then((res) => {
