@@ -459,6 +459,7 @@ module.exports.addOrder = async (req, res) => {
             msg: "Giỏ hàng đang rỗng"
         })
     }
+    
     function groupBy(objectArray, property) {
         return objectArray.reduce(function (acc, obj) {
             var key = obj[property];
@@ -469,6 +470,7 @@ module.exports.addOrder = async (req, res) => {
             return acc;
         }, {});
     }
+    let arrOrderID=[]
     var groupOrder = Object.values(groupBy(cart.productList, 'sellerId'));
     for (let i = 0; i < groupOrder.length; i++) {
         let totalPrice = 0;
@@ -501,6 +503,9 @@ module.exports.addOrder = async (req, res) => {
             status: 0,
             statusRating:0,
         });
+        //push list id vào mảng
+        arrOrderID.push(order._id)
+
     }
 //update cart null
     await Cart.findOneAndUpdate(
@@ -536,8 +541,9 @@ module.exports.addOrder = async (req, res) => {
     //         msg: mainOptions
     //     })
     // })
-
-    return res.status(201).json({ success: true });
+    let stringArr=arrOrderID.toString()
+    console.log(stringArr)
+    return res.status(201).json({ success: true, data:stringArr });
 
     //res.status(500).json({ success: false });
 };
