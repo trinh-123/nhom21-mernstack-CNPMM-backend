@@ -148,7 +148,10 @@ module.exports.getProducts = async (req, res) => {
     );
     return res.json(shirts);
 };
-
+module.exports.getNameProducts=async(req,res) =>{
+    const listNameProduct = await Product.find({}).select("name");
+    return res.json(listNameProduct);
+}
 module.exports.getAllProduct=async(req,res)=>{
     const products=await Product.find({})
     return res.json(products);

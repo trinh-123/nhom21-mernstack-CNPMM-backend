@@ -5,7 +5,7 @@ const router=express.Router();
 router.post("/search",productController.searchProducts);
 router.get ("/getByPrice",productController.getByPrice);
 router.get("/",productController.getProducts);
-
+router.get("/name-products",productController.getNameProducts);
 router.get("/all",productController.getAllProduct);
 router.get("/new",productController.getNewProduct);
 router.get("/:id_product",productController.getProduct);
