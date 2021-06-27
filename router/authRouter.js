@@ -29,6 +29,7 @@ router.post("/login-google",authController.callbackGoogle);
 router.post("/login-facebook",authController.callbackFacebook);
 router.post("/login",authController.postLogin);
 router.post("/contact",authController.postContact);
+router.post("/add-discount",authController.AddDiscount);
 router.use(verifyUser);
 router.get("/users-chat",authController.getAllUserForChat)
 router.post("/add-to-cart",utils.requireRole(1), authController.addToCart);

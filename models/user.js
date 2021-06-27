@@ -9,6 +9,14 @@ const userSchema=new mongoose.Schema({
     groupid: Number,
     avatar:String,
     status: {type: Number, default:1},
+    discount:[
+        {
+            code:String,
+            price:Number,
+            status:Number,
+            createdAt:Date,
+        }
+    ],
     comments:[
         {
             author:{type:mongoose.Types.ObjectId, ref:"User"},

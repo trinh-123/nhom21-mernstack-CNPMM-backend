@@ -559,6 +559,30 @@ module.exports.changeStatus=async(req,res)=>{
     res.json({success:true,orders});
 };
 //#endregion
+module.exports.AddDiscount = async (req,res) =>{
+    const {amount,code,price,sellerID} = req.body;
+    const createdAt =Date.now();
+    let result;
+    for(var i=0;i<amount;i++){
+        result= await User.findOneAndUpdate(
+            {_id:ObjectId(sellerID)},
+            {
+                $push:{
+                    discount:{
+                        code:code[i],
+                        price:price,
+                        status:0,
+                        createdAt:createdAt,
+                    }
+                }
+            },
+            {new:true}
+        )
+    }
+    if(result){
+        return res.status(201).json({success:true,discount:result.discount});
+    }
+}
 module.exports.Comment=async (req,res)=>{
     const {rating,content,sellerID} =req.body;
     let user =await User.findById(req.user.id);
