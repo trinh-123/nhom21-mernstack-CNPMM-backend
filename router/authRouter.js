@@ -22,6 +22,7 @@ function verifyUser(req, res, next) {
 }
 
 router.get("/user", authController.getUserById);
+router.get("/get-discount", authController.getDiscount);
 router.post("/forgot",authController.postForgetPass);
 router.post("/changepassword",authController.postChangePassword);
 router.post("/register",authController.postRegister);
@@ -30,6 +31,7 @@ router.post("/login-facebook",authController.callbackFacebook);
 router.post("/login",authController.postLogin);
 router.post("/contact",authController.postContact);
 router.post("/add-discount",authController.AddDiscount);
+router.post("/apply-discount",authController.updateCartWhenApplyDiscount);
 router.use(verifyUser);
 router.get("/users-chat",authController.getAllUserForChat)
 router.post("/add-to-cart",utils.requireRole(1), authController.addToCart);

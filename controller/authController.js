@@ -2,6 +2,7 @@ const User=require("../models/user");
 const Product=require("../models/product");
 const Cart=require("../models/cart")
 const Order=require("../models/order");
+const Discount =require("../models/discount");
 const Mes=require("../models/messenger");
 const ObjectId=require("mongodb").ObjectId;
 const { findById } = require("../models/user");
@@ -413,6 +414,66 @@ module.exports.updateCart=async(req,res)=>{
     const result=await Cart.findOne({userID:req.user.id});
     res.status(201).json({success:true,data:result});
 };
+module.exports.updateCartWhenApplyDiscount = async (req,res) =>{
+    const {code,userID}=req.body;
+    const cart = await Cart.findOne({ userID: userID});
+    let sellerIDList = [];
+    let count =0;
+    cart.productList.forEach(x=>{
+        sellerIDList.push(x.sellerID);
+    })
+    for(var i=1;i<sellerIDList.length;i++){
+        if(sellerIDList[0]!=sellerIDList[i]){
+            count++;
+        }
+    }
+    if(count>0){
+        res.status(201).json({success:false,msg:"Mã này chỉ áp dụng cho 1 cửa hàng"});
+    }else{
+        const discountTable = await Discount.find({});
+        let sellerID="";
+        discountTable.forEach(x=>{
+            x.discount.forEach(y=>{
+                if(y.code==code ){
+                    sellerID=x.userID;
+                }
+            })
+        })
+        if(sellerID!="" && cart.productList[0].sellerId==sellerID){
+            const discountOfSeller=await Discount.findOne({userID:sellerID});
+            let totalPrice=cart.totalPrice;
+            let discount=[...discountOfSeller.discount];
+            discount.map(x=>{
+                if(x.code==code){
+                    x.status=1;
+                    totalPrice=totalPrice-x.price/1000;
+                }
+            })
+            await Discount.findOneAndUpdate(
+                {userID:sellerID},
+                {
+                    discount,
+                },
+                {new:true}
+            );
+            await Cart.findOneAndUpdate(
+                {userID:userID},
+                {
+                    totalPrice,
+                },
+                {new:true}
+            )
+            res.status(201).json({success:true,msg:"Áp dụng voucher thành công"});
+        }else{
+            res.status(201).json({success:false,msg:"Mã voucher của bạn không hợp lệ hoặc áp dụng sai cửa hàng"});
+        }
+    }
+}
+module.exports.getDiscount = async (req,res)=>{
+    const { ID } = req.query;
+    const user = await Discount.findOne({userID:ID}).populate("comments.author");
+    return res.json(user);
+}
 module.exports.removeFromCart=async (req,res)=>{
     const{productID}=req.body;
     const cart=await Cart.find({userID:req.user.id});
@@ -491,18 +552,35 @@ module.exports.addOrder = async (req, res) => {
                 }
             )
         })
-        let order = await Order.create({
-            customer: ObjectId(req.user.id),
-            totalPrice: totalPrice,
-            seller: seller,
-            productList: groupOrder[i],
-            city:req.body.city,
-            street:req.body.street,
-            phone:req.body.phone,
-            district:req.body.district,
-            status: 0,
-            statusRating:0,
-        });
+        let order;
+        if(cart.totalPrice==totalPrice){
+            order = await Order.create({
+                customer: ObjectId(req.user.id),
+                totalPrice: totalPrice,
+                seller: seller,
+                productList: groupOrder[i],
+                city:req.body.city,
+                street:req.body.street,
+                phone:req.body.phone,
+                district:req.body.district,
+                status: 0,
+                statusRating:0,
+            });
+        }else{
+            order = await Order.create({
+                customer: ObjectId(req.user.id),
+                totalPrice: cart.totalPrice,
+                seller: seller,
+                productList: groupOrder[i],
+                city:req.body.city,
+                street:req.body.street,
+                phone:req.body.phone,
+                district:req.body.district,
+                status: 0,
+                statusRating:0,
+            });
+        }
+        
         //push list id vào mảng
         arrOrderID.push(order._id)
 
@@ -564,23 +642,38 @@ module.exports.AddDiscount = async (req,res) =>{
     const createdAt =Date.now();
     let result;
     for(var i=0;i<amount;i++){
-        result= await User.findOneAndUpdate(
-            {_id:ObjectId(sellerID)},
-            {
-                $push:{
-                    discount:{
-                        code:code[i],
-                        price:price,
-                        status:0,
-                        createdAt:createdAt,
+        const seller = await Discount.findOne({userID:sellerID});
+        if(seller){
+            result = await Discount.findOneAndUpdate(
+                {userID:sellerID},
+                {
+                    $push:{
+                        discount:{
+                            code:code[i],
+                            price:price,
+                            status:0,
+                            createdAt:createdAt,
+                        }
                     }
+                },
+                {new:true}
+            )
+        }else{
+            const dis=new Discount({
+                userID:sellerID,
+                discount:{
+                    code:code[i],
+                    price:price,
+                    status:0,
+                    createdAt:createdAt,
                 }
-            },
-            {new:true}
-        )
+            });
+            await dis.save();
+        }
+        
     }
     if(result){
-        return res.status(201).json({success:true,discount:result.discount});
+        return res.status(201).json({success:true});
     }
 }
 module.exports.Comment=async (req,res)=>{
