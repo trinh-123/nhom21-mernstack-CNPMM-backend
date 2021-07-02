@@ -49,8 +49,11 @@ router.get("/orders",utils.requireRole(1),authController.orders);
 router.put("/orders/:idOrder/status",authController.changeStatus);
 router.post("/comment",authController.Comment);
 router.post("/comment-product",authController.commentProduct);
+router.post("/add-to-follow",utils.requireRole(1),authController.addToFollow);
 router.post("/add-to-favorite",utils.requireRole(1),authController.addToFavorite);
+router.post("/get-follow",utils.requireRole(1),authController.getFollows);
 router.post("/get-favorite",utils.requireRole(1),authController.getFavorites);
+router.post("/delete-follow",utils.requireRole(1),authController.deleteFollow);
 router.post("/delete-favorite",utils.requireRole(1),authController.deleteFavorite);
 router.post(
     "/upload-avatar",

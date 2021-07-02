@@ -733,6 +733,28 @@ module.exports.commentProduct= async (req,res) => {
         return res.status(204).json({success:false,data:"Comment Failed"});
     }
 }
+module.exports.addToFollow =async function(req,res) {
+    let {sellerId} =req.body;
+    let user = await User.findById(req.user.id);
+    let seller = await User.findById(sellerId);
+    const name = seller.name;
+    const avatar =seller.avatar;
+    let follows =user.follows;
+    for(let item of follows){
+        if(req.body.sellerId==item.sellerId){
+            return res.json({
+                success:false,
+                msg:"Đã có trong danh sách theo dõi"
+            });
+        }
+    }
+    await User.findOneAndUpdate(
+        {_id:ObjectId(req.user.id)},
+        {$push:{follows:{ sellerId,name,avatar } } },
+        {new:true}
+    );
+    res.status(201).json({success:true});
+}
 module.exports.addToFavorite =async function(req,res) {
     let shirt =await Product.findById(req.body.idShirt);
     let user = await User.findById(req.user.id);
@@ -756,6 +778,10 @@ module.exports.getFavorites=async function (req,res){
     let user =await User.findById(req.user.id).populate("favorites.shirt");
     res.json({success:true,favorites:user.favorites});
 }
+module.exports.getFollows=async function (req,res){
+    let user =await User.findById(req.user.id).populate("favorites.shirt");
+    res.json({success:true,follows:user.follows});
+}
 module.exports.deleteFavorite= async function (req,res){
     let user= await User.findOneAndUpdate(
         {_id: ObjectId (req.user.id)},
@@ -765,6 +791,16 @@ module.exports.deleteFavorite= async function (req,res){
         {new:true}
     ).populate("favorites.shirt");
     res.json({success:true,favorites:user.favorites});
+}
+module.exports.deleteFollow= async function (req,res){
+    let user= await User.findOneAndUpdate(
+        {_id: ObjectId (req.user.id)},
+        {
+            $pull:{follows:{sellerId:req.body.sellerID}}
+        },
+        {new:true}
+    ).populate("favorites.shirt");
+    res.json({success:true,follows:user.follows});
 }
 module.exports.uploadAvatar=async function(req,res) {
     const uploader=async (path)=> await cloudinary.uploads(path,"images");
