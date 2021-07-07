@@ -40,6 +40,7 @@ router.post("/update-cart",utils.requireRole(1),authController.updateCart);
 router.post("/remove-from-cart",utils.requireRole(1),authController.removeFromCart)
 router.get("/cart",utils.requireRole(1), authController.getCart);
 router.post("/updateuser",authController.postUpdateUser);
+router.post("/viewed",authController.addAndgetToViewed);
 // router.post("/update-cart",authController.updateCart);
 //order
 router.get("/callback",utils.requireRole(1),authController.callback);
@@ -55,6 +56,7 @@ router.post("/get-follow",utils.requireRole(1),authController.getFollows);
 router.post("/get-favorite",utils.requireRole(1),authController.getFavorites);
 router.post("/delete-follow",utils.requireRole(1),authController.deleteFollow);
 router.post("/delete-favorite",utils.requireRole(1),authController.deleteFavorite);
+
 router.post(
     "/upload-avatar",
     upload.single("avatar"),

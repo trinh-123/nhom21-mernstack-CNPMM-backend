@@ -733,7 +733,7 @@ module.exports.commentProduct= async (req,res) => {
         return res.status(204).json({success:false,data:"Comment Failed"});
     }
 }
-module.exports.addToFollow =async function(req,res) {
+module.exports.addToFollow =async (req,res) =>{
     let {sellerId} =req.body;
     let user = await User.findById(req.user.id);
     let seller = await User.findById(sellerId);
@@ -755,7 +755,7 @@ module.exports.addToFollow =async function(req,res) {
     );
     res.status(201).json({success:true});
 }
-module.exports.addToFavorite =async function(req,res) {
+module.exports.addToFavorite =async (req,res) =>{
     let shirt =await Product.findById(req.body.idShirt);
     let user = await User.findById(req.user.id);
     let favorites =user.favorites;
@@ -773,6 +773,45 @@ module.exports.addToFavorite =async function(req,res) {
         {new:true}
     );
     res.status(201).json({success:true});
+}
+module.exports.addAndgetToViewed =async (req,res) =>{
+    let shirt =await Product.findById(req.body.idShirt);
+    let user = await User.findById(req.user.id);
+    let viewed =user.viewed;
+    let flag=0;
+    if(viewed.length>0){
+        for(let item of viewed){
+            if(req.body.idShirt==item.shirt){
+                flag=1;
+                await User.findOneAndUpdate(
+                    {_id:ObjectId(req.body.idUser)},
+                    {$pull: {viewed:item }},
+                    { multi: true }
+                );
+                await User.findOneAndUpdate(
+                    {_id:ObjectId(req.body.idUser)},
+                    {$push:{viewed:{ shirt } } },
+                    {new:true}
+                );
+            } 
+        }
+    }else{
+        flag=1;
+        await User.findOneAndUpdate(
+            {_id:ObjectId(req.body.idUser)},
+            {$push:{viewed:{ shirt } } },
+            {new:true}
+        );
+    }
+    if(flag==0){
+        await User.findOneAndUpdate(
+            {_id:ObjectId(req.body.idUser)},
+            {$push:{viewed:{ shirt } } },
+            {new:true}
+        );
+    }
+    let user2 =await User.findById(req.body.idUser).populate("viewed.shirt");
+    res.status(201).json({success:true,viewed:user2.viewed});
 }
 module.exports.getFavorites=async function (req,res){
     let user =await User.findById(req.user.id).populate("favorites.shirt");

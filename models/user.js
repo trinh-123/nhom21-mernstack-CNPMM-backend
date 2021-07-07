@@ -28,6 +28,11 @@ const userSchema=new mongoose.Schema({
             shirt:{type:mongoose.Types.ObjectId,ref:"Product"},
         },
     ],
+    viewed:[
+        {
+            shirt:{type:mongoose.Types.ObjectId,ref:"Product"},
+        },
+    ],
     follows:[
         {
             sellerId:{type:mongoose.Types.ObjectId},
