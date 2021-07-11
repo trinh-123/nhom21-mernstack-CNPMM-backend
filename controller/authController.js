@@ -563,6 +563,7 @@ module.exports.addOrder = async (req, res) => {
                 street:req.body.street,
                 phone:req.body.phone,
                 district:req.body.district,
+                ward:req.body.ward,
                 status: 0,
                 statusRating:0,
             });
@@ -576,6 +577,7 @@ module.exports.addOrder = async (req, res) => {
                 street:req.body.street,
                 phone:req.body.phone,
                 district:req.body.district,
+                ward:req.body.ward,
                 status: 0,
                 statusRating:0,
             });
