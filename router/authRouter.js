@@ -22,6 +22,7 @@ function verifyUser(req, res, next) {
 }
 
 router.get("/user", authController.getUserById);
+router.get("/admin-getrevenue",authController.getRevenueByAdmin)
 router.get("/get-discount", authController.getDiscount);
 router.post("/forgot",authController.postForgetPass);
 router.post("/changepassword",authController.postChangePassword);
@@ -33,6 +34,7 @@ router.post("/contact",authController.postContact);
 router.post("/add-discount",authController.AddDiscount);
 router.post("/apply-discount",authController.updateCartWhenApplyDiscount);
 router.use(verifyUser);
+router.get("/user-revenue",authController.getRevenueBySeller)
 router.get("/users-chat",authController.getAllUserForChat)
 router.post("/add-to-cart",utils.requireRole(1), authController.addToCart);
 router.post("/update-fee-delivery",utils.requireRole(1),authController.updateFeeDelivery);
