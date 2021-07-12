@@ -972,3 +972,8 @@ module.exports.getRevenueBySeller = async (req, res) => {
   }
   res.json({ data: arr });
 };
+
+module.exports.getListBanChay = async (req, res) => {
+    const result=await Product.find().sort({"quantitysold": -1}).limit(5);
+    res.json({ data: result });
+}
