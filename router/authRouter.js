@@ -22,7 +22,7 @@ function verifyUser(req, res, next) {
 }
 
 router.get("/user", authController.getUserById);
-router.get("/get-list-banchay",authController.getListBanChay)
+router.get("/get-list-bestsold",authController.getListBestSold)
 router.get("/admin-getrevenue",authController.getRevenueByAdmin)
 router.get("/get-discount", authController.getDiscount);
 router.post("/forgot",authController.postForgetPass);
