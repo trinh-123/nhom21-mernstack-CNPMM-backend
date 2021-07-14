@@ -552,36 +552,19 @@ module.exports.addOrder = async (req, res) => {
                 }
             )
         })
-        let order;
-        if(cart.totalPrice==totalPrice){
-            order = await Order.create({
-                customer: ObjectId(req.user.id),
-                totalPrice: totalPrice,
-                seller: seller,
-                productList: groupOrder[i],
-                city:req.body.city,
-                street:req.body.street,
-                phone:req.body.phone,
-                district:req.body.district,
-                ward:req.body.ward,
-                status: 0,
-                statusRating:0,
-            });
-        }else{
-            order = await Order.create({
-                customer: ObjectId(req.user.id),
-                totalPrice: cart.totalPrice,
-                seller: seller,
-                productList: groupOrder[i],
-                city:req.body.city,
-                street:req.body.street,
-                phone:req.body.phone,
-                district:req.body.district,
-                ward:req.body.ward,
-                status: 0,
-                statusRating:0,
-            });
-        }
+        let order = await Order.create({
+            customer: ObjectId(req.user.id),
+            totalPrice: totalPrice,
+            seller: seller,
+            productList: groupOrder[i],
+            city:req.body.city,
+            street:req.body.street,
+            phone:req.body.phone,
+            district:req.body.district,
+            ward:req.body.ward,
+            status: 0,
+            statusRating:0,
+        });
         
         //push list id vào mảng
         arrOrderID.push(order._id)
@@ -592,46 +575,16 @@ module.exports.addOrder = async (req, res) => {
         { userID: req.user.id },
         { totalPrice: 0, productList: [] }
     );
-    //send mail
-    //const userBycustomer = await User.findOne(order.customer);
-    // transporter = nodemailer.createTransport(//"smtps://huynhnhan199999%40gmail:Huynhnhan999@smtp.gmail.com"
-    //     {
-    //         host: "smtp.gmail.com",
-    //         port: 465,
-    //         secure: true,
-    //         auth: {
-    //             user: "huynhnhan199999",
-    //             pass: "Huynhnhan17110293"
-    //         }
-    //     }
-    // );
-    // let mainOptions = {
-    //     to: userBycustomer.email,
-    //     subject: "Thông tin đơn hàng từ TNShop",
-    //     text: "Tổng hóa đơn của bạn là:" + order.cart.totalPrice + "000đ" + "\n" + "Cảm ơn sự ủng hộ của bạn",
-    // }
-    // transporter.sendMail(mainOptions, (error, mainOptions) => {
-    //     if (error) {
-    //         return res.status(201).json({
-    //             msg: error
-    //         })
-    //     }
-    //     return res.status(200).json({
-    //         success: false,
-    //         msg: mainOptions
-    //     })
-    // })
     let stringArr=arrOrderID.toString()
     console.log(stringArr)
     return res.status(201).json({ success: true, data:stringArr });
-
-    //res.status(500).json({ success: false });
 };
 module.exports.orders=async (req,res)=>{
     const orders=await Order.find({customer:req.user.id});
     res.status(200).json({success:true,orders});
 };
 module.exports.changeStatus=async(req,res)=>{
+    console.log("1",req.body);
     let result=await Order.findByIdAndUpdate(req.params.idOrder,{
         status:req.body.status,
     });
@@ -976,4 +929,9 @@ module.exports.getRevenueBySeller = async (req, res) => {
 module.exports.getListBestSold = async (req, res) => {
     const result=await Product.find().sort({"quantitysold": -1}).limit(8);
     res.json({ data: result });
+}
+module.exports.getDiscountPrice = async (req,res)=>{
+    const discount = await Discount.find({userID: req.user.id})
+    
+    res.json({ data: discount });
 }

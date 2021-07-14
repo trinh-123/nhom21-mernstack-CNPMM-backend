@@ -34,8 +34,11 @@ router.post("/login",authController.postLogin);
 router.post("/contact",authController.postContact);
 router.post("/add-discount",authController.AddDiscount);
 router.post("/apply-discount",authController.updateCartWhenApplyDiscount);
+
 router.use(verifyUser);
 router.get("/user-revenue",authController.getRevenueBySeller)
+
+router.get("/get-discount-total",authController.getDiscountPrice);
 router.get("/users-chat",authController.getAllUserForChat)
 router.post("/add-to-cart",utils.requireRole(1), authController.addToCart);
 router.post("/update-fee-delivery",utils.requireRole(1),authController.updateFeeDelivery);

@@ -9,62 +9,80 @@ const config = {
     parnerCode: "MOMOHLYQ20200323",  
     secretKey: "mfSHVrCOyNEoLommh9WK3WdZIHG4OwLL",
     endpoint: "https://test-payment.momo.vn/gw_payment/transactionProcessor",
-    notifyUrl: "https://0cd56ecf8598.ngrok.io/momo/getorder",
+    notifyUrl: "https://a546ae33160e.ngrok.io/momo/getorder",
     accessKey: "QghXGjTEoLJ4Hx8P"
   };
 
 module.exports.getData= async(req,res)=>{
   console.log(req.body)
-  if(req.body.errorCode!=0)
-  arrOrderid=req.body.orderId.split(",")
-  arrOrderid.forEach(async (element) =>{
-    console.log("====",element)
+  var arrOrderid=req.body.orderId.split(",")
+  if(arrOrderid==undefined){
     await Order.findOneAndUpdate(
       {
-          _id:element
+          _id:req.body.orderId
       },
       {
-          status:3
+          status:2
       },
     )
-  })
-  
-  
-  {
-    console.log("ko thanh coong")
-    arrOrderid=req.body.orderId.split(",")
-    console.log(arrOrderid)
-    return res.status(200).json({success:false, msg:"Not success"})
+    {
+      console.log("ko thanh coong")
+      arrOrderid=req.body.orderId.split(",")
+      console.log(arrOrderid)
+      return res.status(200).json({success:false, msg:"Not success"})
+    }
+  }else{
+    arrOrderid.forEach(async (element) =>{
+      console.log("====",element)
+      await Order.findOneAndUpdate(
+        {
+            _id:element
+        },
+        {
+            status:2
+        },
+      )
+    })
+    
+    
+    {
+      console.log("ko thanh coong")
+      arrOrderid=req.body.orderId.split(",")
+      console.log(arrOrderid)
+      return res.status(200).json({success:false, msg:"Not success"})
+    }
   }
-  arrOrderid=req.body.orderId.split(",")
-  console.log("====",arrOrderid)
-  let data = {
-    "partnerCode": config.parnerCode,
-    "requestId": uuidv4(),
-    "orderId": req.body.orderId,
-    "resultCode": 200,
-    "message": "Thanh cong",
-    responseTime: req.body.responseTime,
-    extraData: req.body.extraData
-  }
-  let strSignature = `accessKey=$${config.accessKey}&extraData=${data.extraData}
-  &message=${data.message}&orderId=${data.orderId}&partnerCode=${data.partnerCode}
-  &requestId=${data.requestId}&responseTime=${data.responseTime}&resultCode=
-  ${data.resultCode}`
-  data.signature= crypto.createHmac("sha256",config.secretKey).update(strSignature).digest("hex");
-  console.log(data)
-  return res.status(200).json({success:true,data:data})
+  // console.log("arrId",arrOrderid);
+
+  // arrOrderid=req.body.orderId.split(",")
+  // console.log("====",arrOrderid)
+  // let data = {
+  //   "partnerCode": config.parnerCode,
+  //   "requestId": uuidv4(),
+  //   "orderId": req.body.orderId,
+  //   "resultCode": 200,
+  //   "message": "Thanh cong",
+  //   responseTime: req.body.responseTime,
+  //   extraData: req.body.extraData
+  // }
+  // let strSignature = `accessKey=$${config.accessKey}&extraData=${data.extraData}
+  // &message=${data.message}&orderId=${data.orderId}&partnerCode=${data.partnerCode}
+  // &requestId=${data.requestId}&responseTime=${data.responseTime}&resultCode=
+  // ${data.resultCode}`
+  // data.signature= crypto.createHmac("sha256",config.secretKey).update(strSignature).digest("hex");
+  // console.log(data)
+  // return res.status(200).json({success:true,data:data})
 }
 
-const embeddata = {
-      merchantinfo: "embeddata123"
-    };
-const items = [{
-    itemid: "knb",
-    itemname: "kim nguyen bao",
-    itemprice: 198400,
-    itemquantity: 1
-  }];
+// const embeddata = {
+//       merchantinfo: "embeddata123"
+//     };
+// const items = [{
+//     itemid: "knb",
+//     itemname: "kim nguyen bao",
+//     itemprice: 198400,
+//     itemquantity: 1
+//   }];
 module.exports.createOrder=async(req,res)=>{
     // let cart= await Cart.findOne({userID:req.body.userId});
     const _amount= req.body.totalPrice;
