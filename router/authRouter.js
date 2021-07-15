@@ -23,7 +23,7 @@ function verifyUser(req, res, next) {
 
 router.get("/user", authController.getUserById);
 router.get("/get-list-bestsold",authController.getListBestSold)
-router.get("/admin-getrevenue",authController.getRevenueByAdmin)
+router.post("/admin-getrevenue",authController.getRevenueByAdmin)
 router.get("/get-discount", authController.getDiscount);
 router.post("/forgot",authController.postForgetPass);
 router.post("/changepassword",authController.postChangePassword);
@@ -34,7 +34,7 @@ router.post("/login",authController.postLogin);
 router.post("/contact",authController.postContact);
 router.post("/add-discount",authController.AddDiscount);
 router.post("/apply-discount",authController.updateCartWhenApplyDiscount);
-
+router.get("/get-seller",authController.getSeller);
 router.use(verifyUser);
 router.get("/user-revenue",authController.getRevenueBySeller)
 

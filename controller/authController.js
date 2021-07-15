@@ -817,6 +817,7 @@ module.exports.deleteAvatar=async function(req,res){
 }
 module.exports.getRevenueByAdmin = async (req, res) => {
   const {seller_id}=req.body
+  console.log("a",seller_id);
 
   const order = await Order.find({ seller: ObjectId(seller_id) });
 
@@ -935,3 +936,7 @@ module.exports.getDiscountPrice = async (req,res)=>{
     
     res.json({ data: discount });
 }
+module.exports.getSeller = async (req, res) => {
+    const seller = await User.find({ groupid: 2 });
+    return res.json({ success: true, data: seller });
+};
