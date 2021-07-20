@@ -34,7 +34,7 @@ mongoose.connect(
   () => console.log("connect to db")
 );
 
-const port = 3001;
+const port = process.env.PORT || 3002;
 
 //chat
 app.use("/messenger", messengerAPI);
