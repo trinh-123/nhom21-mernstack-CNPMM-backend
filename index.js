@@ -12,7 +12,7 @@ const http = require("http").Server(app);
 app.use(cors());
 const io = require("socket.io")(http, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://kltn-tnshop.vercel.app/",
     methods: ["GET", "POST", "UPDATE"],
   },
 });

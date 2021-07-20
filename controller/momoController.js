@@ -93,7 +93,7 @@ module.exports.createOrder=async(req,res)=>{
                 requestId: uuidv4(),
                 accessKey:config.accessKey,
                 orderId: orderID, // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
-                returnUrl: "http://localhost:3000/", // miliseconds
+                returnUrl: "https://kltn-tnshop.vercel.app/", // miliseconds
                 extraData: embed_data,
                 notifyUrl: config.notifyUrl,
                 amount: (_amount*1000).toString(),
