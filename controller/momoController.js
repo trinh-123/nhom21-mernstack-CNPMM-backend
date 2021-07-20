@@ -9,7 +9,7 @@ const config = {
     parnerCode: "MOMOHLYQ20200323",  
     secretKey: "mfSHVrCOyNEoLommh9WK3WdZIHG4OwLL",
     endpoint: "https://test-payment.momo.vn/gw_payment/transactionProcessor",
-    notifyUrl: "https://782c12681cad.ngrok.io/momo/getorder",
+    notifyUrl: "https://kltn-ntshop.herokuapp.com/momo/getorder",
     accessKey: "QghXGjTEoLJ4Hx8P"
   };
 
