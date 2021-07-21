@@ -86,7 +86,7 @@ module.exports.createOrder=async(req,res)=>{
     const embed_data = `userId=${req.body.userId}`;
     let listId="";
     for(var i=0;i<orderID.length;i++){
-      if(orderID.length>2){
+      if(orderID.length>1){
         if(i==orderID.length-1){
           listId=orderID[i]+listId
         }else{
