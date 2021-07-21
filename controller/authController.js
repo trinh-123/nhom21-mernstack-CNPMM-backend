@@ -17,7 +17,7 @@ const axios = require('axios').default;
 const CryptoJS=require("crypto-js")
 const graphUrl = "https://graph.facebook.com"
 const version = "v4.0"
-const facebook_secret = "e0e1c5672975422d1567e95e0bd62b0a"
+const facebook_secret = "51022b9c35070fc8ad3acec17e9225a4"
 const {OAuth2Client}=require("google-auth-library");
 const client=new OAuth2Client("75435593592-ibbekma2opi25sc4bnfnrr276ki2ne01.apps.googleusercontent.com")
 //code here
