@@ -19,7 +19,7 @@ module.exports.getData= async(req,res)=>{
   if(arrOrderid==undefined){
     await Order.findOneAndUpdate(
       {
-          _id:req.body.orderId
+          _id:req.body.orderInfo
       },
       {
           status:2
