@@ -86,7 +86,16 @@ module.exports.createOrder=async(req,res)=>{
     const embed_data = `userId=${req.body.userId}`;
     let listId="";
     for(var i=0;i<orderID.length;i++){
-      listId=listId+"-"+orderID[i];
+      if(orderID.length>2){
+        if(i==orderID.length-1){
+          listId=orderID[i]+listId
+        }else{
+          listId=listId+"-"+orderID[i]
+        }
+      }else{
+        listId=req.body.listOrderId;
+      }
+      
     }
     let order={
                 partnerCode: config.parnerCode,
