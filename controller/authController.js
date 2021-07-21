@@ -588,7 +588,7 @@ module.exports.changeStatus=async(req,res)=>{
     let result=await Order.findByIdAndUpdate(req.params.idOrder,{
         status:req.body.status,
     });
-    const orders=await Order.find({}).populate("customer");
+    const orders=await Order.find({customer:req.user.id});
     res.json({success:true,orders});
 };
 //#endregion
