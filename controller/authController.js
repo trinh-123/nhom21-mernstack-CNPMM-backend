@@ -531,7 +531,7 @@ module.exports.addOrder = async (req, res) => {
             return acc;
         }, {});
     }
-    let arrOrderID=[]
+    let arrOrderID="";
     var groupOrder = Object.values(groupBy(cart.productList, 'sellerId'));
     for (let i = 0; i < groupOrder.length; i++) {
         let totalPrice = 0;
@@ -567,7 +567,7 @@ module.exports.addOrder = async (req, res) => {
         });
         
         //push list id vào mảng
-        arrOrderID.push(order._id)
+        arrOrderID=arrOrderID+"-"+order._id;
 
     }
 //update cart null
