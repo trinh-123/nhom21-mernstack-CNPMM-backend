@@ -15,11 +15,11 @@ const config = {
 
 module.exports.getData= async(req,res)=>{
   console.log(req.body)
-  var arrOrderid=req.body.orderId.split(",")
+  var arrOrderid=req.body.orderInfo.split(",")
   if(arrOrderid==undefined){
     await Order.findOneAndUpdate(
       {
-          _id:req.body.orderId
+          _id:req.body.orderInfo
       },
       {
           status:2
@@ -27,7 +27,7 @@ module.exports.getData= async(req,res)=>{
     )
     {
       console.log("ko thanh coong")
-      arrOrderid=req.body.orderId.split(",")
+      arrOrderid=req.body.orderInfo.split(",")
       console.log(arrOrderid)
       return res.status(200).json({success:false, msg:"Not success"})
     }
@@ -87,17 +87,18 @@ module.exports.createOrder=async(req,res)=>{
     // let cart= await Cart.findOne({userID:req.body.userId});
     const _amount= req.body.totalPrice;
     const orderID=req.body.listOrderId
-    const embed_data = `userId=${req.body.userId}`;
+    const userId=req.user.id;
+    const embed_data = `userId=${req.user.id}`;
     let order={
                 partnerCode: config.parnerCode,
                 requestId: uuidv4(),
                 accessKey:config.accessKey,
-                orderId: orderID, // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
+                orderId: userId, // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
                 returnUrl: "https://kltn-tnshop.vercel.app/", // miliseconds
                 extraData: embed_data,
                 notifyUrl: config.notifyUrl,
                 amount: (_amount*1000).toString(),
-                orderInfo: `TN - Payment for the orders #${req.body.listOrderID}`,
+                orderInfo: orderID,
                 requestType: "captureMoMoWallet",
                 lang: "en",
 
