@@ -47,7 +47,7 @@ module.exports.getData= async(req,res)=>{
     
     {
       console.log("ko thanh coong")
-      arrOrderid=req.body.orderId.split(",")
+      arrOrderid=req.body.orderInfo.split(",")
       console.log(arrOrderid)
       return res.status(200).json({success:false, msg:"Not success"})
     }
@@ -87,8 +87,8 @@ module.exports.createOrder=async(req,res)=>{
     // let cart= await Cart.findOne({userID:req.body.userId});
     const _amount= req.body.totalPrice;
     const orderID=req.body.listOrderId
-    const userId=req.user.id;
-    const embed_data = `userId=${req.user.id}`;
+    const userId=req.body.userId;
+    const embed_data = `userId=${req.body.userId}`;
     let order={
                 partnerCode: config.parnerCode,
                 requestId: uuidv4(),
