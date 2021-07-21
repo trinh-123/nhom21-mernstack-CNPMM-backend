@@ -836,7 +836,8 @@ module.exports.getRevenueByAdmin = async (req, res) => {
     { month: 12, total: 0, year: 2021 },
   ];
   for (const element of order) {
-    let date = new Date(element.createdAt);
+    if(element.status !=4){
+        let date = new Date(element.createdAt);
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
     if (arr.length == 0) {
@@ -868,6 +869,7 @@ module.exports.getRevenueByAdmin = async (req, res) => {
         }
       }
     }
+    }
   }
   res.json({ data: arr });
 };
@@ -891,37 +893,39 @@ module.exports.getRevenueBySeller = async (req, res) => {
     { month: 12, total: 0, year: 2021 },
   ];
   for (const element of order) {
-    let date = new Date(element.createdAt);
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-    if (arr.length == 0) {
-      let item = {
-        month: month,
-        total: element.totalPrice,
-      };
-      arr.push(item);
-    } else {
-      for (const e of arr) {
-        if (month == e.month) {
-          if (year == e.year) {
-            e.year = year;
-            e.total = e.total + element.totalPrice;
-          } else {
-            let item = {
-              month: month,
-              year: year,
-              total: 0,
-            };
-            arr.push(item);
-          }
-        } else {
-          let item = {
+    if(element.status !=4){
+        let date = new Date(element.createdAt);
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        if (arr.length == 0) {
+        let item = {
             month: month,
-            year: year,
             total: element.totalPrice,
-          };
+        };
+        arr.push(item);
+        } else {
+        for (const e of arr) {
+            if (month == e.month) {
+            if (year == e.year) {
+                e.year = year;
+                e.total = e.total + element.totalPrice;
+            } else {
+                let item = {
+                month: month,
+                year: year,
+                total: 0,
+                };
+                arr.push(item);
+            }
+            } else {
+            let item = {
+                month: month,
+                year: year,
+                total: element.totalPrice,
+            };
+            }
         }
-      }
+        }
     }
   }
   res.json({ data: arr });
