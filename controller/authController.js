@@ -533,43 +533,84 @@ module.exports.addOrder = async (req, res) => {
     }
     let arrOrderID=[]
     var groupOrder = Object.values(groupBy(cart.productList, 'sellerId'));
-    for (let i = 0; i < groupOrder.length; i++) {
-        let totalPrice = 0;
-        var seller = "";
-        groupOrder[i].forEach(async (element) => {
-            totalPrice = totalPrice + (element.amount * element.productID.price);
-            seller = element.sellerId;
-            const product= await Product.findOne(element.productID._id);
-            await Product.findOneAndUpdate(
-                {
-                    _id:element.productID._id
-                },
-                {
-                    quantitysold:product.quantitysold + element.amount
-                },
-                {
-                    new:true
-                }
-            )
-        })
-        let order = await Order.create({
-            customer: ObjectId(req.user.id),
-            totalPrice: totalPrice,
-            seller: seller,
-            productList: groupOrder[i],
-            city:req.body.city,
-            street:req.body.street,
-            phone:req.body.phone,
-            district:req.body.district,
-            ward:req.body.ward,
-            status: 0,
-            statusRating:0,
-        });
-        
-        //push list id vào mảng
-        arrOrderID.push(order._id)
-
+    if(groupOrder.length>1){
+        for (let i = 0; i < groupOrder.length; i++) {
+            let totalPrice = 0;
+            var seller = "";
+            groupOrder[i].forEach(async (element) => {
+                totalPrice = totalPrice + (element.amount * element.productID.price);
+                seller = element.sellerId;
+                const product= await Product.findOne(element.productID._id);
+                await Product.findOneAndUpdate(
+                    {
+                        _id:element.productID._id
+                    },
+                    {
+                        quantitysold:product.quantitysold + element.amount
+                    },
+                    {
+                        new:true
+                    }
+                )
+            })
+            let order = await Order.create({
+                customer: ObjectId(req.user.id),
+                totalPrice: totalPrice,
+                seller: seller,
+                productList: groupOrder[i],
+                city:req.body.city,
+                street:req.body.street,
+                phone:req.body.phone,
+                district:req.body.district,
+                ward:req.body.ward,
+                status: 0,
+                statusRating:0,
+            });
+            
+            //push list id vào mảng
+            arrOrderID.push(order._id)
+    
+        }
+    }else{
+        for (let i = 0; i < groupOrder.length; i++) {
+            let totalPrice = 0;
+            var seller = "";
+            groupOrder[i].forEach(async (element) => {
+                totalPrice = totalPrice + (element.amount * element.productID.price);
+                seller = element.sellerId;
+                const product= await Product.findOne(element.productID._id);
+                await Product.findOneAndUpdate(
+                    {
+                        _id:element.productID._id
+                    },
+                    {
+                        quantitysold:product.quantitysold + element.amount
+                    },
+                    {
+                        new:true
+                    }
+                )
+            })
+            let order = await Order.create({
+                customer: ObjectId(req.user.id),
+                totalPrice: cart.totalPrice,
+                seller: seller,
+                productList: groupOrder[i],
+                city:req.body.city,
+                street:req.body.street,
+                phone:req.body.phone,
+                district:req.body.district,
+                ward:req.body.ward,
+                status: 0,
+                statusRating:0,
+            });
+            
+            //push list id vào mảng
+            arrOrderID.push(order._id)
+    
+        }
     }
+    
 //update cart null
     await Cart.findOneAndUpdate(
         { userID: req.user.id },
