@@ -971,7 +971,126 @@ module.exports.getRevenueBySeller = async (req, res) => {
   }
   res.json({ data: arr });
 };
-
+module.exports.getBestSoldByQuarter = async (req,res) =>{
+    let sellerID = req.body.sellerId;
+    const order = await Order.find({ seller: ObjectId(sellerID) });
+    let arrOrder1=[];
+    let arrOrder2=[];
+    let arrOrder3=[];
+    let arrOrder4=[];
+    order.forEach((x)=>{
+        let date = new Date(x.createdAt);
+        let month = date.getMonth() + 1;
+        let condition1 = month==1 || month==2 || month==3;
+        let condition2 = month==4 || month==5 || month==6;
+        let condition3 = month==7 || month==8 || month==9;
+        let condition4 = month==10 || month==11 || month==12;
+        if(x.status!=4 && condition1){
+            arrOrder1.push(x);
+        }
+        if(x.status!=4 && condition2){
+            arrOrder2.push(x);
+        }
+        if(x.status!=4 && condition3){
+            arrOrder3.push(x);
+        }
+        if(x.status!=4 && condition4){
+            arrOrder4.push(x);
+        }
+    })
+    var productListQ1=[];
+    var productListQ2=[];
+    var productListQ3=[];
+    var productListQ4=[];
+    arrOrder1.forEach((x)=>{
+        x.productList.forEach(y=>{
+            productListQ1.push(y.productID);
+        })
+    })
+    arrOrder2.forEach((x)=>{
+        x.productList.forEach(y=>{
+            productListQ2.push(y.productID);
+        })
+    })
+    arrOrder3.forEach((x)=>{
+        x.productList.forEach(y=>{
+            productListQ3.push(y.productID);
+        })
+    })
+    arrOrder4.forEach((x)=>{
+        x.productList.forEach(y=>{
+            productListQ4.push(y.productID);
+        })
+    })
+    function compareById( a, b ) {
+        if ( a._id < b._id ){
+          return -1;
+        }
+        if ( a._id > b._id ){
+          return 1;
+        }
+        return 0;
+      }
+    function compareByCount(a,b){
+        if ( a.count < b.count ){
+            return -1;
+          }
+          if ( a.count > b.count ){
+            return 1;
+          }
+          return 0;
+    }
+    productListQ1.sort( compareById );
+    productListQ2.sort( compareById );
+    productListQ3.sort( compareById );
+    productListQ4.sort( compareById );
+    function count(array_elements) {
+        var a=[];
+        var current = "null";
+        var cnt = 0;
+        for (var i = 0; i < array_elements.length; i++) {
+            if (array_elements[i]._id.toString() != current.toString()) {
+                if (cnt > 0) {
+                    a.push({"product": current,"count": cnt})
+                }
+                current = array_elements[i]._id;
+                cnt = 1;
+            } else {
+                cnt++;
+            }
+        }
+        if (cnt > 0) {
+            a.push({"product": current,"count": cnt})
+        }
+        return a;
+    }
+    var arrQ1= count(productListQ1)
+    var arrQ2= count(productListQ2)
+    var arrQ3= count(productListQ3)
+    var arrQ4= count(productListQ4)
+    arrQ1.sort(compareByCount);
+    arrQ2.sort(compareByCount);
+    arrQ3.sort(compareByCount);
+    arrQ4.sort(compareByCount);
+    const getProduct= async (arr) =>{
+        var flagCount=0;
+        var newArr=[];
+        var product;
+        for(var i=arr.length-1;i>=0;i--){
+            if(flagCount<5){
+                product = await Product.findById({_id:arr[i].product})
+                newArr.push(product);
+                flagCount++;
+            }
+        }
+        return newArr;
+    }
+    const arrQuarter1=await getProduct(arrQ1);
+    const arrQuarter2=await getProduct(arrQ2);
+    const arrQuarter3=await getProduct(arrQ3);
+    const arrQuarter4=await getProduct(arrQ4);
+    res.json({ data1:arrQuarter1,data2:arrQuarter2,data3:arrQuarter3,data4:arrQuarter4});
+}
 module.exports.getListBestSold = async (req, res) => {
     const result=await Product.find().sort({"quantitysold": -1}).limit(8);
     res.json({ data: result });

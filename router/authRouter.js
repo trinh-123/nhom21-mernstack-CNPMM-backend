@@ -35,6 +35,7 @@ router.post("/contact",authController.postContact);
 router.post("/add-discount",authController.AddDiscount);
 router.post("/apply-discount",authController.updateCartWhenApplyDiscount);
 router.get("/get-seller",authController.getSeller);
+router.get("/get-bestsold-by-quarter",authController.getBestSoldByQuarter);
 router.use(verifyUser);
 router.get("/user-revenue",authController.getRevenueBySeller)
 
