@@ -1079,7 +1079,7 @@ module.exports.getBestSoldByQuarter = async (req,res) =>{
         for(var i=arr.length-1;i>=0;i--){
             if(flagCount<5){
                 product = await Product.findById({_id:arr[i].product})
-                newArr.push(product);
+                newArr.push({"product":product,"count":arr[i].count});
                 flagCount++;
             }
         }
