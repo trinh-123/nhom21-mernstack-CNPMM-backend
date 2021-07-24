@@ -972,7 +972,7 @@ module.exports.getRevenueBySeller = async (req, res) => {
   res.json({ data: arr });
 };
 module.exports.getBestSoldByQuarter = async (req,res) =>{
-    let sellerID = req.body.sellerId;
+    let sellerID = req.user.id;
     const order = await Order.find({ seller: ObjectId(sellerID) });
     let arrOrder1=[];
     let arrOrder2=[];
