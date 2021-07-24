@@ -12,6 +12,7 @@ const orderSchema =new mongoose.Schema({
     district:String,
     ward:String,
     statusRating:Number,
+    isUpdate:Number,
     phone:Number,
 },
 {timestamps:true}

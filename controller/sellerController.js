@@ -4,12 +4,40 @@ const Order=require("../models/order");
 const upload = require("../multer");
 const cloudinary = require("../cloudinary");
 const fs = require("fs");
-const product = require("../models/product");
+const Product = require("../models/product");
 
 module.exports.changeStatus = async (req, res) => {
     let result = await Order.findByIdAndUpdate(req.params.idOrder, {
         status: req.body.status,
     });
+    let productArr=[];
+    result.productList.forEach((x)=>{
+        productArr.push({"productId":x.productID._id,"amount":x.amount})
+    })
+    if(req.body.status==4 && result.status!=4){
+        var product;
+        productArr.forEach(async(x)=>{
+            product = await Product.findById({_id:x.productId});
+            const quantitysold=product.quantitysold-x.amount;
+            await Product.findByIdAndUpdate(
+                {_id:x.productId},
+                {quantitysold:quantitysold},
+                {new:true}
+            )
+        })
+    }
+    if(req.body.status==1 && result.status==4 || req.body.status==2 && result.status==4 || req.body.status==3 && result.status==4){
+        var product;
+        productArr.forEach(async(x)=>{
+            product = await Product.findById({_id:x.productId});
+            const quantitysold=product.quantitysold+x.amount;
+            await Product.findByIdAndUpdate(
+                {_id:x.productId},
+                {quantitysold:quantitysold},
+                {new:true}
+            )
+        })
+    }
     const orders = await Order.find({seller:req.user.id}).populate("customer");
     res.json({ success: true, orders });
 };

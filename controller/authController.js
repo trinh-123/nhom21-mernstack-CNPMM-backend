@@ -565,6 +565,7 @@ module.exports.addOrder = async (req, res) => {
                 ward:req.body.ward,
                 status: 0,
                 statusRating:0,
+                isUpdate:0,
             });
             
             //push list id vào mảng
@@ -603,6 +604,7 @@ module.exports.addOrder = async (req, res) => {
                 ward:req.body.ward,
                 status: 0,
                 statusRating:0,
+                isUpdate:0,
             });
             
             //push list id vào mảng
@@ -625,10 +627,27 @@ module.exports.orders=async (req,res)=>{
     res.status(200).json({success:true,orders});
 };
 module.exports.changeStatus=async(req,res)=>{
-    console.log("1",req.body);
+    console.log("1",req.body.status);
     let result=await Order.findByIdAndUpdate(req.params.idOrder,{
         status:req.body.status,
     });
+    let productArr=[];
+    result.productList.forEach((x)=>{
+        productArr.push({"productId":x.productID._id,"amount":x.amount})
+    })
+    if(req.body.status==4 && result.status!=4){
+        var product;
+        productArr.forEach(async(x)=>{
+            product = await Product.findById({_id:x.productId});
+            const quantitysold=product.quantitysold-x.amount;
+            await Product.findByIdAndUpdate(
+                {_id:x.productId},
+                {quantitysold:quantitysold},
+                {new:true}
+            )
+        })
+        
+    }
     const orders=await Order.find({customer:req.user.id});
     res.json({success:true,orders});
 };
