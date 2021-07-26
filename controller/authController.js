@@ -351,6 +351,7 @@ module.exports.addToCart=async(req,res)=>{
             $push:{
                 productList:{
                     size:size,
+                    isRating:0,
                     amount:amount,
                     productID:product,
                     sellerId:product.seller.toString()
@@ -720,10 +721,18 @@ module.exports.commentProduct= async (req,res) => {
     const {rating,content,productID,orderID} =req.body;
     let user =await User.findById(req.user.id);
     const createdAt= Date.now();
+    const order = await Order.findById({_id:orderID});
+    var productArr = []
+    order.productList.forEach(x=>{
+        if(productID==x.productID._id){
+            x.isRating = 1;
+        }
+        productArr.push(x);
+    })
     await Order.findOneAndUpdate(
         {_id:ObjectId(orderID)},
         {
-            statusRating:1
+            productList:productArr
         },
         {new:true}
     )
